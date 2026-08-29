@@ -9,23 +9,13 @@
     |--------------------------------------------------------------------------
     */
 
-    $regularPrice = (float) ($product->price ?? 0);
+    $regularPrice = (float) $product->original_price;
+    $discountPrice = (float) $product->sale_price;
+    $discountAmount = (float) $product->discount_amount;
 
-    $discountPrice = $product->discount_price !== null
-        ? (float) $product->discount_price
-        : $regularPrice;
+    $hasDiscount = $regularPrice > 0 && $discountPrice < $regularPrice;
 
-    $hasDiscount = $regularPrice > 0
-        && $discountPrice > 0
-        && $discountPrice < $regularPrice;
-
-    $discountPercent = $product->discount_percent;
-
-    if (!$discountPercent && $hasDiscount) {
-        $discountPercent = round(
-            (($regularPrice - $discountPrice) / $regularPrice) * 100
-        );
-    }
+    $discountPercent = $product->discount_percent_calculated;
 
     /*
     |--------------------------------------------------------------------------
@@ -286,7 +276,7 @@
                             </span>
 
                             <span class="mb-1 rounded-lg bg-red-50 px-2.5 py-1 text-sm font-bold text-red-600">
-                                Save ৳ {{ number_format($regularPrice - $discountPrice, 2) }}
+                                Save ৳ {{ number_format($discountAmount, 2) }}
                             </span>
 
                         @endif
@@ -701,20 +691,9 @@
                     @foreach($relatedProducts as $related)
 
                         @php
-                            $relatedRegular = (float) ($related->price ?? 0);
-
-                            $relatedPrice = $related->discount_price !== null
-                                ? (float) $related->discount_price
-                                : $relatedRegular;
-
-                            $relatedDiscount =
-                                $related->discount_percent
-                                ?: (
-                                    $relatedRegular > 0 &&
-                                    $relatedPrice < $relatedRegular
-                                    ? round((($relatedRegular - $relatedPrice) / $relatedRegular) * 100)
-                                    : 0
-                                );
+                            $relatedRegular = (float) $related->original_price;
+                            $relatedPrice = (float) $related->sale_price;
+                            $relatedDiscount = (float) $related->discount_percent_calculated;
                         @endphp
 
                         <article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -724,7 +703,7 @@
 
                                 <div class="relative aspect-square overflow-hidden bg-slate-50">
 
-                                    @if($related->discount_price !== null && $relatedDiscount > 0)
+                                    @if($relatedDiscount > 0)
 
                                         <span class="absolute left-2 top-2 z-10 rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-bold text-white">
                                             -{{ $relatedDiscount }}%

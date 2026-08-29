@@ -12,26 +12,59 @@ class CartController extends Controller
         return session('cart', []);
     }
 
+    /**
+     * Re-sync cart prices with the current Product record.
+     * This fixes old cart sessions that may contain a stale price.
+     */
+    private function normalizeCart(array $cart): array
+    {
+        foreach ($cart as $id => &$item) {
+            $productId = $item['id'] ?? $id;
+            $product = Product::find($productId);
+
+            if (!$product) {
+                continue;
+            }
+
+            $item['id'] = $product->product_id;
+            $item['name'] = $product->product_name;
+            $item['price'] = (float) $product->sale_price;
+            $item['regular_price'] = (float) $product->original_price;
+            $item['qty'] = max(1, (int) ($item['qty'] ?? 1));
+            $item['image'] = $product->thumbnail;
+        }
+
+        unset($item);
+
+        return $cart;
+    }
+
     public function index()
     {
+        $cart = $this->normalizeCart($this->cart());
+        session(['cart' => $cart]);
+
         return view('cart.index', [
-            'cart' => $this->cart(),
+            'cart' => $cart,
         ]);
     }
 
     public function add(Request $r, Product $product)
     {
         $qty = max(1, (int) $r->input('qty', 1));
-
-        $cart = $this->cart();
-
+        $cart = $this->normalizeCart($this->cart());
         $id = $product->product_id;
 
+        $salePrice = (float) $product->sale_price;
+        $regularPrice = (float) $product->original_price;
+        $existingQty = isset($cart[$id]) ? (int) ($cart[$id]['qty'] ?? 0) : 0;
+
         $cart[$id] = [
-            'id'    => $id,
-            'name'  => $product->product_name,
-            'price' => (float) $product->sale_price,
-            'qty'   => ($cart[$id]['qty'] ?? 0) + $qty,
+            'id' => $id,
+            'name' => $product->product_name,
+            'price' => $salePrice,
+            'regular_price' => $regularPrice,
+            'qty' => $existingQty + $qty,
             'image' => $product->thumbnail,
         ];
 
@@ -41,7 +74,7 @@ class CartController extends Controller
 
         if ($r->expectsJson()) {
             return response()->json([
-                'status'    => 'success',
+                'status' => 'success',
                 'cartCount' => $count,
             ]);
         }
@@ -51,10 +84,9 @@ class CartController extends Controller
 
     public function update(Request $r)
     {
-        $cart = $this->cart();
+        $cart = $this->normalizeCart($this->cart());
 
         foreach ($r->input('qty', []) as $id => $qty) {
-
             if (!isset($cart[$id])) {
                 continue;
             }
@@ -71,20 +103,18 @@ class CartController extends Controller
         session(['cart' => $cart]);
 
         $subtotal = 0;
-
         foreach ($cart as $item) {
-            $subtotal += ((float) ($item['price'] ?? 0))
-                * ((int) ($item['qty'] ?? 0));
+            $subtotal += ((float) ($item['price'] ?? 0)) * ((int) ($item['qty'] ?? 0));
         }
 
         $count = collect($cart)->sum('qty');
 
         if ($r->expectsJson()) {
             return response()->json([
-                'status'    => 'success',
+                'status' => 'success',
                 'cartCount' => $count,
-                'subtotal'  => number_format($subtotal, 2, '.', ''),
-                'cart'      => $cart,
+                'subtotal' => number_format($subtotal, 2, '.', ''),
+                'cart' => $cart,
             ]);
         }
 
@@ -93,26 +123,22 @@ class CartController extends Controller
 
     public function remove(Request $r, $id)
     {
-        $cart = $this->cart();
-
+        $cart = $this->normalizeCart($this->cart());
         unset($cart[$id]);
-
         session(['cart' => $cart]);
 
         $subtotal = 0;
-
         foreach ($cart as $item) {
-            $subtotal += ((float) ($item['price'] ?? 0))
-                * ((int) ($item['qty'] ?? 0));
+            $subtotal += ((float) ($item['price'] ?? 0)) * ((int) ($item['qty'] ?? 0));
         }
 
         $count = collect($cart)->sum('qty');
 
         if ($r->expectsJson()) {
             return response()->json([
-                'status'    => 'success',
+                'status' => 'success',
                 'cartCount' => $count,
-                'subtotal'  => number_format($subtotal, 2, '.', ''),
+                'subtotal' => number_format($subtotal, 2, '.', ''),
             ]);
         }
 

@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('content'); ?>
 
-@section('content')
-
-@php
+<?php
     $cartCount = collect($cart)->sum(function ($item) {
         return (int) ($item['qty'] ?? 0);
     });
@@ -33,15 +31,13 @@
         $totalSavings +=
             max(0, $originalPrice - $salePrice) * $qty;
     }
-@endphp
+?>
 
 
 <div class="min-h-screen bg-slate-50">
 
 
-    {{-- =========================================================
-         PAGE HEADER
-    ========================================================== --}}
+    
     <div class="border-b border-slate-200 bg-white">
 
         <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -69,8 +65,10 @@
                     id="cart-count-badge"
                     class="w-fit rounded-full bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700"
                 >
-                    {{ $cartCount }}
-                    {{ $cartCount == 1 ? 'Item' : 'Items' }}
+                    <?php echo e($cartCount); ?>
+
+                    <?php echo e($cartCount == 1 ? 'Item' : 'Items'); ?>
+
                 </div>
 
             </div>
@@ -81,26 +79,22 @@
 
 
 
-    {{-- =========================================================
-         MAIN
-    ========================================================== --}}
+    
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 
-        @if(count($cart))
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($cart)): ?>
 
 
             <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
 
 
-                {{-- =================================================
-                     CART ITEMS
-                ================================================== --}}
+                
                 <div>
 
                     <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
 
-                        {{-- Header --}}
+                        
                         <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
 
                             <div class="flex items-center justify-between">
@@ -132,12 +126,12 @@
 
 
 
-                        {{-- Items --}}
+                        
                         <div id="cart-items">
 
-                            @foreach($cart as $id => $item)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $cart; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
 
-                                @php
+                                <?php
 
                                     $salePrice = (float) (
                                         $item['price'] ?? 0
@@ -177,29 +171,27 @@
 
                                     $image = $item['image'] ?? null;
 
-                                @endphp
+                                ?>
 
 
 
                                 <div
                                     data-cart-item
-                                    data-id="{{ $id }}"
-                                    data-price="{{ $salePrice }}"
-                                    data-regular-price="{{ $originalPrice }}"
+                                    data-id="<?php echo e($id); ?>"
+                                    data-price="<?php echo e($salePrice); ?>"
+                                    data-regular-price="<?php echo e($originalPrice); ?>"
                                     class="border-b border-slate-100 p-5 transition hover:bg-slate-50 sm:p-6"
                                 >
 
                                     <div class="flex flex-col gap-5 sm:flex-row sm:items-center">
 
 
-                                        {{-- =================================
-                                             IMAGE
-                                        ================================== --}}
+                                        
                                         <div class="h-24 w-24 shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:h-28 sm:w-28">
 
-                                            @if($image)
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($image): ?>
 
-                                                @php
+                                                <?php
 
                                                     $imagePath = ltrim(
                                                         str_replace(
@@ -236,12 +228,12 @@
                                                             );
                                                     }
 
-                                                @endphp
+                                                ?>
 
 
                                                 <img
-                                                    src="{{ $imageUrl }}"
-                                                    alt="{{ $item['name'] }}"
+                                                    src="<?php echo e($imageUrl); ?>"
+                                                    alt="<?php echo e($item['name']); ?>"
                                                     class="h-full w-full object-contain p-2"
                                                     loading="lazy"
                                                     onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');"
@@ -254,7 +246,7 @@
 
                                                 </div>
 
-                                            @else
+                                            <?php else: ?>
 
                                                 <div class="flex h-full w-full items-center justify-center text-slate-300">
 
@@ -262,58 +254,59 @@
 
                                                 </div>
 
-                                            @endif
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                                         </div>
 
 
 
-                                        {{-- =================================
-                                             PRODUCT INFO
-                                        ================================== --}}
+                                        
                                         <div class="min-w-0 flex-1">
 
                                             <h3 class="break-words text-base font-black text-slate-950 sm:text-lg">
-                                                {{ $item['name'] }}
+                                                <?php echo e($item['name']); ?>
+
                                             </h3>
 
 
-                                            {{-- Sale + Original Price --}}
+                                            
                                             <div class="mt-2 flex flex-wrap items-center gap-2">
 
 
-                                                {{-- SALE PRICE --}}
+                                                
                                                 <span
                                                     class="text-xl font-black text-indigo-600"
                                                 >
-                                                    ৳ {{ number_format($salePrice, 2) }}
+                                                    ৳ <?php echo e(number_format($salePrice, 2)); ?>
+
                                                 </span>
 
 
-                                                {{-- ORIGINAL PRICE --}}
-                                                @if($originalPrice > $salePrice)
+                                                
+                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($originalPrice > $salePrice): ?>
 
                                                     <span class="text-sm font-bold text-slate-400 line-through">
-                                                        ৳ {{ number_format($originalPrice, 2) }}
+                                                        ৳ <?php echo e(number_format($originalPrice, 2)); ?>
+
                                                     </span>
 
 
-                                                    {{-- DISCOUNT --}}
-                                                    @if($discountPercent > 0)
+                                                    
+                                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($discountPercent > 0): ?>
 
                                                         <span class="rounded-full bg-red-50 px-2.5 py-1 text-[10px] font-black text-red-600">
-                                                            -{{ $discountPercent }}%
+                                                            -<?php echo e($discountPercent); ?>%
                                                         </span>
 
-                                                    @endif
+                                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                                                @endif
+                                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                                             </div>
 
 
-                                            {{-- Saving --}}
-                                            @if($itemSaving > 0)
+                                            
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($itemSaving > 0): ?>
 
                                                 <p
                                                     class="mt-1 text-xs font-bold text-emerald-600"
@@ -321,11 +314,12 @@
                                                     <i class="fa-solid fa-tag mr-1"></i>
 
                                                     You save ৳
-                                                    {{ number_format($itemSaving, 2) }}
+                                                    <?php echo e(number_format($itemSaving, 2)); ?>
+
 
                                                 </p>
 
-                                            @endif
+                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
 
                                             <p class="mt-1 text-[11px] text-slate-400">
@@ -336,9 +330,7 @@
 
 
 
-                                        {{-- =================================
-                                             QUANTITY
-                                        ================================== --}}
+                                        
                                         <div class="flex items-center justify-between gap-5 sm:justify-end">
 
 
@@ -363,7 +355,7 @@
                                                     <input
                                                         type="number"
                                                         min="0"
-                                                        value="{{ $qty }}"
+                                                        value="<?php echo e($qty); ?>"
                                                         data-qty
                                                         class="w-14 border-x border-slate-200 text-center text-sm font-black outline-none"
                                                     >
@@ -383,7 +375,7 @@
 
 
 
-                                            {{-- ITEM TOTAL --}}
+                                            
                                             <div class="min-w-[125px] text-right">
 
                                                 <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">
@@ -394,7 +386,8 @@
                                                     data-item-total
                                                     class="mt-1 text-base font-black text-slate-950"
                                                 >
-                                                    ৳ {{ number_format($itemTotal, 2) }}
+                                                    ৳ <?php echo e(number_format($itemTotal, 2)); ?>
+
                                                 </p>
 
                                             </div>
@@ -404,9 +397,7 @@
 
 
 
-                                        {{-- =================================
-                                             REMOVE
-                                        ================================== --}}
+                                        
                                         <button
                                             type="button"
                                             data-remove
@@ -426,13 +417,13 @@
 
                                 </div>
 
-                            @endforeach
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
 
                         </div>
 
 
 
-                        {{-- Continue Shopping --}}
+                        
                         <div class="border-t border-slate-100 bg-slate-50/70 px-5 py-5 sm:px-7">
 
                             <a
@@ -455,16 +446,14 @@
 
 
 
-                {{-- =================================================
-                     ORDER SUMMARY
-                ================================================== --}}
+                
                 <aside class="lg:sticky lg:top-28 lg:self-start">
 
 
                     <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
 
-                        {{-- Summary Header --}}
+                        
                         <div class="border-b border-slate-100 px-6 py-5">
 
                             <h2 class="text-lg font-black text-slate-950">
@@ -482,7 +471,7 @@
                         <div class="space-y-5 p-6">
 
 
-                            {{-- Items --}}
+                            
                             <div class="flex justify-between text-sm">
 
                                 <span class="font-semibold text-slate-500">
@@ -493,15 +482,16 @@
                                     id="summary-count"
                                     class="font-black text-slate-950"
                                 >
-                                    {{ $cartCount }}
+                                    <?php echo e($cartCount); ?>
+
                                 </span>
 
                             </div>
 
 
 
-                            {{-- Regular Total --}}
-                            @if($regularTotal > $subtotal)
+                            
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($regularTotal > $subtotal): ?>
 
                                 <div class="flex justify-between text-sm">
 
@@ -513,13 +503,14 @@
                                         id="regular-total"
                                         class="font-bold text-slate-400 line-through"
                                     >
-                                        ৳ {{ number_format($regularTotal, 2) }}
+                                        ৳ <?php echo e(number_format($regularTotal, 2)); ?>
+
                                     </span>
 
                                 </div>
 
 
-                                {{-- Savings --}}
+                                
                                 <div class="flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3">
 
                                     <span class="text-sm font-bold text-emerald-700">
@@ -534,16 +525,17 @@
                                         id="cart-savings"
                                         class="text-sm font-black text-emerald-700"
                                     >
-                                        ৳ {{ number_format($totalSavings, 2) }}
+                                        ৳ <?php echo e(number_format($totalSavings, 2)); ?>
+
                                     </span>
 
                                 </div>
 
-                            @endif
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
 
 
-                            {{-- Sale Subtotal --}}
+                            
                             <div class="flex justify-between text-sm">
 
                                 <span class="font-semibold text-slate-500">
@@ -554,14 +546,15 @@
                                     id="cart-subtotal"
                                     class="font-black text-slate-950"
                                 >
-                                    ৳ {{ number_format($subtotal, 2) }}
+                                    ৳ <?php echo e(number_format($subtotal, 2)); ?>
+
                                 </span>
 
                             </div>
 
 
 
-                            {{-- Delivery --}}
+                            
                             <div class="flex justify-between text-sm">
 
                                 <span class="font-semibold text-slate-500">
@@ -576,7 +569,7 @@
 
 
 
-                            {{-- Final Total --}}
+                            
                             <div class="border-t border-dashed border-slate-200 pt-5">
 
                                 <div class="flex items-end justify-between">
@@ -591,7 +584,8 @@
                                             id="estimated-total"
                                             class="mt-1 text-2xl font-black text-slate-950"
                                         >
-                                            ৳ {{ number_format($subtotal, 2) }}
+                                            ৳ <?php echo e(number_format($subtotal, 2)); ?>
+
                                         </p>
 
                                     </div>
@@ -609,7 +603,7 @@
 
 
 
-                            {{-- Checkout --}}
+                            
                             <a
                                 href="/checkout"
                                 class="flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 px-5 py-4 text-sm font-black text-white shadow-lg shadow-indigo-100 transition hover:-translate-y-0.5 hover:from-indigo-700 hover:to-blue-700"
@@ -629,7 +623,7 @@
 
 
 
-                            {{-- Secure --}}
+                            
                             <div class="flex gap-3 rounded-2xl bg-slate-50 p-4">
 
                                 <div class="text-emerald-600">
@@ -663,12 +657,10 @@
             </div>
 
 
-        @else
+        <?php else: ?>
 
 
-            {{-- =================================================
-                 EMPTY CART
-            ================================================== --}}
+            
             <div class="mx-auto max-w-2xl py-12">
 
                 <div class="rounded-3xl border border-slate-200 bg-white px-6 py-14 text-center shadow-sm">
@@ -708,7 +700,7 @@
             </div>
 
 
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
     </div>
 
@@ -716,10 +708,8 @@
 
 
 
-{{-- =========================================================
-     JAVASCRIPT
-========================================================== --}}
-@if(count($cart))
+
+<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($cart)): ?>
 
 <script>
 
@@ -1442,6 +1432,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
-@endif
+<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\Laravel Project\optimumbiomedical\resources\views/cart/index.blade.php ENDPATH**/ ?>
