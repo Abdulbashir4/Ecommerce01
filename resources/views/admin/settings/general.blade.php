@@ -1,0 +1,59 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="mx-auto max-w-6xl space-y-6">
+    <div>
+        <p class="text-sm font-black uppercase tracking-[0.2em] text-indigo-600">System / General</p>
+        <h1 class="text-3xl font-black text-slate-900 sm:text-4xl">General Settings</h1>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Website identity, regional settings, contact information, checkout behaviour, tax/shipping and maintenance controls এক জায়গা থেকে পরিচালনা করুন।</p>
+    </div>
+    <form method="POST" action="{{ route('admin.settings.general.update') }}" class="space-y-6">@csrf
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mb-5 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-indigo-50 text-indigo-600"><i class="fa-solid fa-globe"></i></span><div><h2 class="font-black">1. Website Identity</h2><p class="text-xs text-slate-500">Public website-এর নাম এবং পরিচিতি।</p></div></div>
+            <div class="grid gap-4 md:grid-cols-2">
+                <label><span class="mb-1.5 block text-sm font-bold">Website Name *</span><input name="site_name" required value="{{ old('site_name', $settings['site_name']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Tagline / Short Description</span><input name="tagline" value="{{ old('tagline', $settings['tagline']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+            </div>
+        </section>
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mb-5 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-sky-50 text-sky-600"><i class="fa-solid fa-coins"></i></span><div><h2 class="font-black">2. Currency & Regional</h2><p class="text-xs text-slate-500">মূল্য, timezone এবং date/time format।</p></div></div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <label><span class="mb-1.5 block text-sm font-bold">Currency Code *</span><input name="currency" value="{{ old('currency', $settings['currency']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="BDT"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Currency Symbol *</span><input name="currency_symbol" value="{{ old('currency_symbol', $settings['currency_symbol']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="৳"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Timezone *</span><select name="timezone" class="w-full rounded-xl border border-slate-200 px-4 py-3">@foreach(['Asia/Dhaka','Asia/Kolkata','UTC','Europe/London','America/New_York'] as $v)<option value="{{ $v }}" @selected($settings['timezone']===$v)>{{ $v }}</option>@endforeach</select></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Date Format</span><input name="date_format" value="{{ old('date_format', $settings['date_format']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="d M Y"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Time Format</span><input name="time_format" value="{{ old('time_format', $settings['time_format']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="h:i A"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Default Country</span><input name="default_country" value="{{ old('default_country', $settings['default_country']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+            </div>
+        </section>
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mb-5 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-50 text-emerald-600"><i class="fa-solid fa-address-book"></i></span><div><h2 class="font-black">3. Contact Information</h2><p class="text-xs text-slate-500">Store-এর প্রধান যোগাযোগের তথ্য।</p></div></div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <label><span class="mb-1.5 block text-sm font-bold">Contact Email</span><input type="email" name="contact_email" value="{{ old('contact_email', $settings['contact_email']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Contact Phone</span><input name="contact_phone" value="{{ old('contact_phone', $settings['contact_phone']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">WhatsApp Number</span><input name="whatsapp" value="{{ old('whatsapp', $settings['whatsapp']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+                <label class="sm:col-span-2 lg:col-span-3"><span class="mb-1.5 block text-sm font-bold">Default Address</span><textarea name="address" rows="2" class="w-full rounded-xl border border-slate-200 px-4 py-3">{{ old('address', $settings['address']) }}</textarea></label>
+                <label class="sm:col-span-2 lg:col-span-3"><span class="mb-1.5 block text-sm font-bold">Order Notification Email</span><input type="email" name="order_notification_email" value="{{ old('order_notification_email', $settings['order_notification_email']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3" placeholder="orders@example.com"></label>
+            </div>
+        </section>
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mb-5 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-amber-50 text-amber-600"><i class="fa-solid fa-cart-shopping"></i></span><div><h2 class="font-black">4. Commerce & Checkout</h2><p class="text-xs text-slate-500">Tax, shipping এবং customer checkout behaviour।</p></div></div>
+            <div class="grid gap-3 md:grid-cols-2">
+                @foreach(['tax_enabled'=>'Enable Tax','shipping_enabled'=>'Enable Shipping','registration_enabled'=>'Allow Customer Registration','guest_checkout'=>'Allow Guest Checkout'] as $key=>$label)
+                    <label class="flex items-center justify-between rounded-2xl border border-slate-200 p-4"><span><strong class="block">{{ $label }}</strong><small class="text-xs text-slate-500">Enable / disable this store behaviour.</small></span><span><input type="hidden" name="{{ $key }}" value="0"><input type="checkbox" name="{{ $key }}" value="1" @checked($settings[$key]) class="h-5 w-5 rounded border-slate-300 text-indigo-600"></span></label>
+                @endforeach
+            </div>
+            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                <label><span class="mb-1.5 block text-sm font-bold">Tax Rate (%)</span><input type="number" min="0" max="100" step="0.01" name="tax_rate" value="{{ old('tax_rate', $settings['tax_rate']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+                <label><span class="mb-1.5 block text-sm font-bold">Default Shipping Cost</span><input type="number" min="0" step="0.01" name="default_shipping_cost" value="{{ old('default_shipping_cost', $settings['default_shipping_cost']) }}" class="w-full rounded-xl border border-slate-200 px-4 py-3"></label>
+            </div>
+        </section>
+        <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="mb-5 flex items-center gap-3"><span class="grid h-11 w-11 place-items-center rounded-2xl bg-rose-50 text-rose-600"><i class="fa-solid fa-triangle-exclamation"></i></span><div><h2 class="font-black">5. Maintenance</h2><p class="text-xs text-slate-500">Site maintenance state এবং customer-facing message।</p></div></div>
+            <label class="flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 p-4"><span><strong class="block">Maintenance Mode</strong><small class="text-xs text-slate-600">Setting persist হবে; public blocking middleware আলাদাভাবে প্রয়োগ করতে হবে।</small></span><span><input type="hidden" name="maintenance" value="0"><input type="checkbox" name="maintenance" value="1" @checked($settings['maintenance']) class="h-5 w-5 rounded border-slate-300 text-amber-600"></span></label>
+            <label class="mt-4 block"><span class="mb-1.5 block text-sm font-bold">Maintenance Message</span><textarea name="maintenance_message" rows="3" class="w-full rounded-xl border border-slate-200 px-4 py-3">{{ old('maintenance_message', $settings['maintenance_message']) }}</textarea></label>
+        </section>
+        <div class="sticky bottom-3 z-10 flex justify-end rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur"><button class="rounded-xl bg-gradient-to-r from-indigo-600 to-sky-500 px-7 py-3 text-sm font-black text-white shadow-lg">Save All General Settings</button></div>
+    </form>
+</div>
+@endsection

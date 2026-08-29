@@ -1,0 +1,37 @@
+OPTIMUM BIOMEDICAL - PROFESSIONAL LARAVEL ADMIN PANEL
+
+This package is based on the latest optimumbiomedical Laravel project supplied in the conversation and the supplied legacy admin(1).zip design.
+
+ADMIN DESIGN
+- Dark left sidebar with responsive mobile drawer
+- Sticky professional header
+- Dashboard KPI cards
+- Order overview and revenue bars
+- Recent orders
+- Product management
+- Category / Subcategory / Brand management
+- Order management and order details
+- Order tracking
+- Completed sales
+- Company information
+- Admin-only access through the existing auth + admin middleware
+- Tailwind utility classes throughout the admin Blade views
+- No storefront footer is included in the admin layout
+
+RUN LOCALLY (Windows / XAMPP)
+1. Start Apache and MySQL from XAMPP.
+2. Open CMD.
+3. Run:
+   cd /d "E:\Laravel Project\optimumbiomedical"
+   C:\xampp\php84\php.exe artisan optimize:clear
+   C:\xampp\php84\php.exe artisan serve --host=127.0.0.1 --port=8000
+4. Open:
+   http://127.0.0.1:8000/login
+5. After admin login, open:
+   http://127.0.0.1:8000/admin
+
+IMPORTANT
+- Do not run migrate:fresh on the existing database.
+- The supplied database already contains the store tables.
+- The current project expects users.is_admin for admin authorization.
+- Your existing Admin user must have is_admin = 1.
