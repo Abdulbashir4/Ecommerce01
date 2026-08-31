@@ -9,7 +9,7 @@
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <div class="min-w-0 shrink-0">
+        <div class="min-w-0 shrink-0 hidden lg:flex">
             <a href="{{ url('/') }}" class="flex items-center gap-2">
                 @if($headerCompany?->logo)
                     @php

@@ -158,11 +158,13 @@
                         {{-- Product Icon / Image --}}
                         <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 sm:h-20 sm:w-20">
 
-                            @if(!empty($i->product_image))
+                            @php($itemImage = $i->product?->thumbnail ?: $i->product?->featured_image)
+                            @if($itemImage)
                                 <img
-                                    src="{{ asset('storage/' . $i->product_image) }}"
+                                    src="{{ asset(str_starts_with($itemImage, 'uploads/') ? $itemImage : 'uploads/products/' . $itemImage) }}"
                                     alt="{{ $i->product_name }}"
-                                    class="h-full w-full object-cover"
+                                    class="h-full w-full object-contain"
+                                    loading="lazy"
                                 >
                             @else
                                 <i class="fa-solid fa-microscope text-2xl text-slate-300"></i>
@@ -207,6 +209,9 @@
                             <p class="mt-1 text-xs text-slate-400">
                                 Item Total
                             </p>
+                            @if($i->product_id && !in_array($i->product_id, $reviewedProductIds ?? [], true))
+                                <a href="{{ route('account.reviews') }}" class="mt-2 inline-flex text-xs font-black text-indigo-600 hover:text-indigo-800">Write a review</a>
+                            @endif
 
                         </div>
 
@@ -282,7 +287,7 @@
     <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
 
         <a
-            href="{{ url('/account') }}"
+            href="{{ route('account.orders') }}"
             class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3.5 font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50"
         >
             <i class="fa-solid fa-arrow-left"></i>
@@ -290,7 +295,7 @@
         </a>
 
         <a
-            href="{{ url('/products') }}"
+            href="{{ route('shop') }}"
             class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-sky-500 px-6 py-3.5 font-black text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
         >
             Continue Shopping

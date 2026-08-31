@@ -30,6 +30,11 @@ class User extends Authenticatable
     public function getAuthIdentifierName() { return 'id'; }
 
     public function orders() { return $this->hasMany(Order::class, 'user_id'); }
+    public function addresses() { return $this->hasMany(CustomerAddress::class); }
+
+    public function wishlists() { return $this->hasMany(Wishlist::class); }
+
+    public function reviews() { return $this->hasMany(ProductReview::class); }
 
     public function roles(): BelongsToMany
     {

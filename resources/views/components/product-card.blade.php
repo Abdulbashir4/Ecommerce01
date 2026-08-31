@@ -73,9 +73,18 @@
             @endif
 
             @if($s['show_wishlist'])
-                <button type="button" class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Wishlist">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
+                @auth
+                    <form method="POST" action="{{ route('account.wishlist.add', $product->product_id) }}" class="absolute right-3 top-3">
+                        @csrf
+                        <button type="submit" class="grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Add to wishlist">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Login to save">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+                @endauth
             @endif
 
             @if($s['show_view_button'])

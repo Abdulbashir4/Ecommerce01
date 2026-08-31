@@ -123,14 +123,53 @@ Route::middleware('auth')->group(function () {
     Route::get('/account', [AccountController::class, 'index'])
         ->name('account');
 
+    Route::get('/account/orders', [AccountController::class, 'orders'])
+        ->name('account.orders');
+
     Route::get('/account/orders/{order}', [AccountController::class, 'order'])
         ->name('account.order');
+
+    Route::get('/account/profile', [AccountController::class, 'profileEdit'])
+        ->name('account.profile.edit');
+
+    Route::put('/account/profile', [AccountController::class, 'profileUpdate'])
+        ->name('account.profile.update');
 
     Route::get('/account/password', [AccountController::class, 'passwordEdit'])
         ->name('account.password.edit');
 
     Route::put('/account/password', [AccountController::class, 'passwordUpdate'])
         ->name('account.password.update');
+
+    Route::get('/account/addresses', [AccountController::class, 'addresses'])
+        ->name('account.addresses');
+
+    Route::post('/account/addresses', [AccountController::class, 'addressStore'])
+        ->name('account.addresses.store');
+
+    Route::put('/account/addresses/{address}', [AccountController::class, 'addressUpdate'])
+        ->name('account.addresses.update');
+
+    Route::patch('/account/addresses/{address}/default', [AccountController::class, 'addressDefault'])
+        ->name('account.addresses.default');
+
+    Route::delete('/account/addresses/{address}', [AccountController::class, 'addressDestroy'])
+        ->name('account.addresses.destroy');
+
+    Route::get('/account/wishlist', [AccountController::class, 'wishlist'])
+        ->name('account.wishlist');
+
+    Route::post('/account/wishlist/{product}', [AccountController::class, 'wishlistAdd'])
+        ->name('account.wishlist.add');
+
+    Route::delete('/account/wishlist/{wishlist}', [AccountController::class, 'wishlistRemove'])
+        ->name('account.wishlist.remove');
+
+    Route::get('/account/reviews', [AccountController::class, 'reviews'])
+        ->name('account.reviews');
+
+    Route::post('/account/reviews', [AccountController::class, 'reviewStore'])
+        ->name('account.reviews.store');
 });
 
 
