@@ -9,7 +9,7 @@
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <div class="min-w-0 shrink-0">
+        <div class="min-w-0 shrink-0 hidden lg:flex">
             <a href="<?php echo e(url('/')); ?>" class="flex items-center gap-2">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($headerCompany?->logo): ?>
                     <?php

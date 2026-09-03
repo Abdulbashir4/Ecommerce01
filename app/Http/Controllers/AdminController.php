@@ -284,26 +284,35 @@ class AdminController extends Controller
         ]);
     }
 
-    public function categoryStore(Request $request){$d=$request->validate(['category_name'=>'required|string|max:255','category_image'=>'nullable|image|max:4096']);if($request->hasFile('category_image')){$dir=public_path('uploads/categories');if(!is_dir($dir))@mkdir($dir,0775,true);$name=uniqid('cat_').'.'.$request->file('category_image')->getClientOriginalExtension();$request->file('category_image')->move($dir,$name);$d['category_image']='uploads/categories/'.$name;}Category::create($d);return back()->with('success','Category added successfully.');}
+    public function categoryStore(Request $request){$d=$request->validate(['category_name'=>'required|string|max:255','category_image'=>'nullable|image|max:4096']);if($request->hasFile('category_image')){$dir=public_path('uploads/categories');if(!is_dir($dir))@mkdir($dir,0775,true);$name=uniqid('cat_').'.'.$request->file('category_image')->getClientOriginalExtension();$request->file('category_image')->move($dir,$name);$d['category_image']='uploads/categories/'.$name;}$category=new Category();$category->timestamps=false;$category->fill($d);$category->save();return back()->with('success','Category added successfully.');}
     public function subcategoryStore(Request $request)
-    {
-        $data = $request->validate([
-            'category_id' => ['required', 'integer', 'exists:categories,category_id'],
-            'parent_subcategory_id' => ['nullable', 'integer', 'exists:subcategories,subcategory_id'],
-            'subcategory_name' => ['required', 'string', 'max:255'],
-        ]);
+{
+    $data = $request->validate([
+        'category_id' => 'required|integer|exists:categories,category_id',
+        'subcategory_name' => 'required|string|max:255',
+    ]);
 
-        if (!empty($data['parent_subcategory_id'])) {
-            $parent = Subcategory::findOrFail($data['parent_subcategory_id']);
-            if ((int) $parent->category_id !== (int) $data['category_id']) {
-                return back()->withErrors(['parent_subcategory_id' => 'Parent subcategory must belong to the selected category.'])->withInput();
-            }
-        }
+    $subcategory = new Subcategory();
+    $subcategory->timestamps = false;
+    $subcategory->fill($data);
+    $subcategory->save();
 
-        Subcategory::create($data);
-        return back()->with('success', 'Subcategory added successfully.');
-    }
-    public function brandStore(Request $request){Brand::create($request->validate(['subcategory_id'=>'required|integer|exists:subcategories,subcategory_id','brand_name'=>'required|string|max:255']));return back()->with('success','Brand added successfully.');}
+    return back()->with('success', 'Subcategory added successfully.');
+}
+  public function brandStore(Request $request)
+{
+    $data = $request->validate([
+        'subcategory_id' => 'required|integer|exists:subcategories,subcategory_id',
+        'brand_name' => 'required|string|max:255',
+    ]);
+
+    $brand = new Brand();
+    $brand->timestamps = false;
+    $brand->fill($data);
+    $brand->save();
+
+    return back()->with('success', 'Brand added successfully.');
+}
     public function categoryDelete(Category $category){if($category->subcategories()->exists() || $category->products()->exists()) return back()->withErrors(['catalog'=>'This category cannot be deleted while it has subcategories or products.']);$category->delete();return back()->with('success','Category deleted successfully.');}
     public function subcategoryDelete(Subcategory $subcategory)
     {
@@ -483,7 +492,7 @@ class AdminController extends Controller
     {
         $order->load('items','user');
         $company = CompanyInfo::query()->first() ?? new CompanyInfo();
-        return view('admin.sale-invoice', compact('order','company'));
+        return view('admin.invoice.sale-invoice', compact('order','company'));
     }
 
     public function tracking(Request $request){$orders=Order::query()->when($request->filled('q'),fn($q)=>$q->where('order_id',$request->integer('q')))->latest('order_id')->paginate(20)->withQueryString();return view('admin.tracking',compact('orders'));}

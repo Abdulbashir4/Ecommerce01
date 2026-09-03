@@ -73,9 +73,18 @@
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($s['show_wishlist']): ?>
-                <button type="button" class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Wishlist">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+                    <form method="POST" action="<?php echo e(route('account.wishlist.add', $product->product_id)); ?>" class="absolute right-3 top-3">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Add to wishlist">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <a href="<?php echo e(route('login')); ?>" class="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-slate-600 shadow-md transition hover:bg-indigo-600 hover:text-white" title="Login to save">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($s['show_view_button']): ?>

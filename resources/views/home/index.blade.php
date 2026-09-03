@@ -32,23 +32,35 @@
     </div>
 </section>
 
-<section id="category" class="py-12 px-6 lg:px-10 bg-gray-100">
-    <h2 class="text-2xl font-bold text-center mb-6">Shop by Category</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-        @foreach($categories as $category)
-            <a href="{{ route('shop', ['category' => $category->category_id]) }}" class="block">
-                <div class="group bg-white rounded shadow overflow-hidden">
-                    <div class="h-28 bg-gray-100 overflow-hidden">
-                        @if($category->category_image)
-                            <img src="{{ asset($category->category_image) }}" alt="{{ $category->category_name }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-2xl"></i></div>
-                        @endif
+<section id="category" class="bg-gray-100 py-10 sm:py-12 px-3 sm:px-6 lg:px-10">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-6 flex items-center justify-between gap-4">
+            <h2 class="text-2xl font-bold text-center sm:text-left">Shop by Category</h2>
+            <div id="categoryPagination" class="hidden lg:flex items-center gap-2" aria-label="Category pagination"></div>
+        </div>
+
+        {{-- Mobile/tablet: all categories stay in one horizontal scrolling row. --}}
+        <div id="categoryMobileScroller" class="lg:hidden flex gap-3 overflow-x-auto pb-3 snap-x snap-mandatory" style="scrollbar-width:thin;">
+            @foreach($categories as $category)
+                <a href="{{ route('shop', ['category' => $category->category_id]) }}" class="block w-[170px] sm:w-[190px] flex-none snap-start">
+                    <div class="group bg-white rounded-lg shadow-sm overflow-hidden h-full">
+                        <div class="h-28 sm:h-32 bg-gray-100 overflow-hidden">
+                            @if($category->category_image)
+                                <img src="{{ asset($category->category_image) }}" alt="{{ $category->category_name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-2xl"></i></div>
+                            @endif
+                        </div>
+                        <div class="min-h-[58px] p-3 flex items-center justify-center text-center">
+                            <h3 class="text-sm font-semibold leading-5">{{ $category->category_name }}</h3>
+                        </div>
                     </div>
-                    <div class="p-3 text-center"><h3 class="text-sm font-semibold">{{ $category->category_name }}</h3></div>
-                </div>
-            </a>
-        @endforeach
+                </a>
+            @endforeach
+        </div>
+
+        {{-- Desktop: exactly two rows (6 columns). Extra categories use pagination. --}}
+        <div id="categoryDesktopGrid" class="hidden lg:grid grid-cols-6 gap-5"></div>
     </div>
 </section>
 
@@ -117,6 +129,74 @@ function startPromo(id, images) {
     setInterval(() => { i = (i + 1) % images.length; el.src = images[i]; }, 4000);
 }
 startPromo('box1', promoSets.box1); startPromo('box2', promoSets.box2);
+
+// Desktop category pagination: 12 items per page = 2 rows x 6 columns.
+@php
+    $categoryData = $categories->map(function ($category) {
+        return [
+            'id' => $category->category_id,
+            'name' => $category->category_name,
+            'image' => $category->category_image ? asset($category->category_image) : null,
+            'url' => route('shop', ['category' => $category->category_id]),
+        ];
+    })->values();
+@endphp
+const categoryData = @json($categoryData);
+const categoryGrid = document.getElementById('categoryDesktopGrid');
+const categoryPagination = document.getElementById('categoryPagination');
+const desktopPageSize = 12;
+let categoryPage = 1;
+
+function renderDesktopCategories(page) {
+    if (!categoryGrid || !categoryPagination) return;
+
+    const totalPages = Math.max(1, Math.ceil(categoryData.length / desktopPageSize));
+    categoryPage = Math.min(Math.max(page, 1), totalPages);
+    const start = (categoryPage - 1) * desktopPageSize;
+    const items = categoryData.slice(start, start + desktopPageSize);
+
+    categoryGrid.innerHTML = items.map(category => `
+        <a href="${category.url}" class="block min-w-0">
+            <div class="group bg-white rounded-lg shadow-sm overflow-hidden h-full">
+                <div class="h-28 bg-gray-100 overflow-hidden">
+                    ${category.image
+                        ? `<img src="${category.image}" alt="${escapeHtml(category.name)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">`
+                        : '<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fa-regular fa-image text-2xl"></i></div>'}
+                </div>
+                <div class="min-h-[58px] p-3 flex items-center justify-center text-center">
+                    <h3 class="text-sm font-semibold leading-5">${escapeHtml(category.name)}</h3>
+                </div>
+            </div>
+        </a>
+    `).join('');
+
+    categoryPagination.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const makeButton = (label, page, disabled = false, active = false) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        button.disabled = disabled;
+        button.className = `h-9 min-w-9 rounded-md border px-2 text-sm font-semibold transition ${active ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-700 hover:bg-gray-50'} disabled:cursor-not-allowed disabled:opacity-40`;
+        button.addEventListener('click', () => renderDesktopCategories(page));
+        return button;
+    };
+
+    categoryPagination.appendChild(makeButton('‹', categoryPage - 1, categoryPage === 1));
+    for (let page = 1; page <= totalPages; page++) {
+        categoryPagination.appendChild(makeButton(String(page), page, false, page === categoryPage));
+    }
+    categoryPagination.appendChild(makeButton('›', categoryPage + 1, categoryPage === totalPages));
+}
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#039;', '"': '&quot;'
+    }[char]));
+}
+
+if (categoryData.length) renderDesktopCategories(1);
 
 
 </script>

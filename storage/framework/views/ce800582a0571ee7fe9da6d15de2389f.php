@@ -1,9 +1,9 @@
-@php
+<?php
     $invoiceCompany = $company ?? \App\Models\CompanyInfo::query()->first();
-@endphp
-@extends('layouts.admin')
+?>
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="mx-auto w-full max-w-7xl space-y-6">
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -14,36 +14,36 @@
         </div>
     </div>
 
-    {{-- ALL INFORMATION ABOVE --}}
+    
     <section class="rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
             <h2 class="text-lg font-black text-slate-950">Invoice Information</h2>
             <p class="mt-1 text-xs text-slate-500">Customer and product information</p>
         </div>
 
-        <form id="manualInvoiceForm" method="POST" action="{{ route('admin.sales.store') }}" class="space-y-6 p-5 sm:p-7">
-            @csrf
+        <form id="manualInvoiceForm" method="POST" action="<?php echo e(route('admin.sales.store')); ?>" class="space-y-6 p-5 sm:p-7">
+            <?php echo csrf_field(); ?>
 
             <input type="hidden" name="invoice_number" id="invoiceNumber">
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <label class="block">
                     <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">Customer Name</span>
-                    <input name="customer_name" id="customerName" value="{{ old('customer_name') }}"
+                    <input name="customer_name" id="customerName" value="<?php echo e(old('customer_name')); ?>"
                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-50"
                            placeholder="Customer name">
                 </label>
 
                 <label class="block">
                     <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">Phone</span>
-                    <input name="phone" id="customerPhone" value="{{ old('phone') }}"
+                    <input name="phone" id="customerPhone" value="<?php echo e(old('phone')); ?>"
                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-50"
                            placeholder="01XXXXXXXXX">
                 </label>
 
                 <label class="block">
                     <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">Email</span>
-                    <input type="email" name="email" id="customerEmail" value="{{ old('email') }}"
+                    <input type="email" name="email" id="customerEmail" value="<?php echo e(old('email')); ?>"
                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-50"
                            placeholder="customer@example.com">
                 </label>
@@ -53,7 +53,7 @@
                 <span class="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">Address</span>
                 <textarea name="address" id="customerAddress" rows="2"
                           class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-50"
-                          placeholder="Customer address">{{ old('address') }}</textarea>
+                          placeholder="Customer address"><?php echo e(old('address')); ?></textarea>
             </label>
 
             <div class="overflow-hidden rounded-2xl border border-slate-200">
@@ -127,7 +127,7 @@
         </form>
     </section>
 
-    {{-- PREVIEW BELOW ALL INPUTS --}}
+    
     <section class="rounded-3xl border border-slate-200 bg-slate-100/70 p-4 shadow-inner sm:p-6">
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -155,57 +155,63 @@
             <div id="invoicePreview" class="invoice-preview-sheet relative mx-auto h-[1123px] w-[794px] overflow-hidden bg-white px-[45px] py-[50px] text-[13px] text-slate-950 shadow-2xl">
 
                 <div class="grid grid-cols-3 items-start">
-    {{-- LEFT: COMPANY INFORMATION --}}
+    
     <div>
         <div class="text-[17px] font-black">
-            {{ $invoiceCompany?->company_name ?? '' }}
+            <?php echo e($invoiceCompany?->company_name ?? ''); ?>
+
         </div>
         <div class="mt-1 max-w-[240px] text-[12px] leading-5">
-            {{ $invoiceCompany?->address ?? '' }}
+            <?php echo e($invoiceCompany?->address ?? ''); ?>
+
         </div>
         <div class="text-[12px] leading-5">
-            {{ $invoiceCompany?->phone ?? '' }}
+            <?php echo e($invoiceCompany?->phone ?? ''); ?>
+
         </div>
-        @if(!empty($invoiceCompany?->email))
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($invoiceCompany?->email)): ?>
             <div class="text-[12px] leading-5">
-                {{ $invoiceCompany->email }}
+                <?php echo e($invoiceCompany->email); ?>
+
             </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
 
-    {{-- CENTER: COMPANY LOGO --}}
+    
     <div class="flex items-center justify-center pt-2">
-        @if(!empty($invoiceCompany?->logo))
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($invoiceCompany?->logo)): ?>
             <img
-                src="{{ filter_var($invoiceCompany->logo, FILTER_VALIDATE_URL) ? $invoiceCompany->logo : (str_starts_with((string) $invoiceCompany->logo, 'uploads/') ? asset($invoiceCompany->logo) : asset('uploads/side_image/' . basename((string) $invoiceCompany->logo))) }}"
-                alt="{{ $invoiceCompany->company_name ?? 'Company Logo' }}"
+                src="<?php echo e(filter_var($invoiceCompany->logo, FILTER_VALIDATE_URL) ? $invoiceCompany->logo : (str_starts_with((string) $invoiceCompany->logo, 'uploads/') ? asset($invoiceCompany->logo) : asset('uploads/side_image/' . basename((string) $invoiceCompany->logo)))); ?>"
+                alt="<?php echo e($invoiceCompany->company_name ?? 'Company Logo'); ?>"
                 class="h-24 w-48 object-contain"
             >
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
 
-    {{-- RIGHT: INVOICE INFORMATION --}}
+    
     <div class="text-left text-[12px] leading-5">
         <div class="font-bold">Invoice No:</div>
         <div id="previewInvoiceNumber" class="text-[15px] font-black">
-            INV-{{ now()->format('Ymd-His') }}
+            INV-<?php echo e(now()->format('Ymd-His')); ?>
+
         </div>
         <div class="mt-1">
             Date:
             <span id="previewDate">
-                {{ now()->format('d M Y, h:i A') }}
+                <?php echo e(now()->format('d M Y, h:i A')); ?>
+
             </span>
         </div>
     </div>
 </div>
 
-{{-- TWO HORIZONTAL LINES BELOW EMAIL --}}
+
 <div class="mt-3 w-full space-y-1">
     <div class="h-px w-full bg-slate-700"></div>
     <div class="h-px w-full bg-slate-700"></div>
 </div>
 
-                {{-- CUSTOMER AT THE BOTTOM OF THE INVOICE, ABOVE SIGNATURES --}}
+                
                 <div class="mt-4">
                     <div class="grid grid-cols-2 border border-slate-700 text-[12px]">
                         <div class="border-r border-slate-700 p-3">
@@ -270,7 +276,7 @@
                     In Words: <span id="pWords">Zero</span> Taka Only
                 </div>
 
-                {{-- SIGNATURES FIXED AT THE VERY BOTTOM --}}
+                
                 <div class="invoice-preview-signatures absolute bottom-[34px] left-[45px] right-[45px] grid grid-cols-3 gap-10 text-center text-[12px] font-bold">
                     <div>
                         <div class="mx-auto mb-2 w-32 border-t border-slate-700"></div>
@@ -289,9 +295,9 @@
         </div>
     </section>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 (() => {
     const rows = document.getElementById('saleItems');
@@ -558,4 +564,6 @@
     calculate();
 })();
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\Laravel Project\optimumbiomedical\resources\views/admin/sales.blade.php ENDPATH**/ ?>
