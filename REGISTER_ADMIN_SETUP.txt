@@ -1,0 +1,21 @@
+UPDATED FILES
+
+resources/views/auth/register.blade.php
+- Production-style Tailwind utility UI.
+- No footer.
+- Responsive and password show/hide.
+
+app/Http/Controllers/AuthController.php
+- Newly registered users are explicitly is_admin=false.
+- Admin users are redirected to /admin after successful login.
+- Normal users are redirected to /account.
+
+ADMIN ACCESS
+
+The existing AdminMiddleware protects the current /admin routes and checks users.is_admin.
+The existing DatabaseSeeder creates the administrator using ADMIN_PHONE (default 01700000000), password 'password', and is_admin=true.
+
+After replacing files, run:
+C:\xampp\php84\php.exe artisan optimize:clear
+
+Then login at /login. An admin account is sent directly to /admin.

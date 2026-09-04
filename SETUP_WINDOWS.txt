@@ -1,0 +1,30 @@
+OPTIMUM BIOMEDICAL - Laravel 13 Home Page Update
+
+This package is based on the supplied Laravel project and the supplied legacy Optimum home page source.
+The Home Page design is implemented from the actual legacy index.php/header/sidebar/footer code; it is not a guessed design.
+
+IMPORTANT FOR YOUR CURRENT DATABASE
+-----------------------------------
+Your existing MySQL database already contains the legacy tables. The current Laravel project had two schema mismatches seen during testing:
+1) users.updated_at was missing.
+2) orders.user_id was missing.
+A new migration fixes these without trying to recreate your existing tables.
+
+Run CMD in the project folder:
+
+cd /d "E:\Laravel Project\optimumbiomedical"
+C:\xampp\php84\php.exe artisan migrate --path=database/migrations/2026_08_21_000002_fix_legacy_schema.php
+C:\xampp\php84\php.exe artisan optimize:clear
+C:\xampp\php84\php.exe artisan storage:link
+C:\xampp\php84\php.exe artisan serve --host=127.0.0.1 --port=8000
+
+Then open:
+http://127.0.0.1:8000/
+
+The project includes vendor/ and the legacy uploads/ assets, so Composer installation is not required for this package.
+The Home Page uses Tailwind CSS CDN exactly like the supplied legacy page, so an npm/Vite build is not required to run this Home Page.
+
+If you later want local Vite/Tailwind development:
+C:\xampp\php84\php.exe -v
+npm install
+npm run dev

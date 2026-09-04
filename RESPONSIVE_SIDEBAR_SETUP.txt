@@ -1,0 +1,29 @@
+OPTIMUM BIOMEDICAL - RESPONSIVE / NESTED SIDEBAR UPDATE
+
+This package was modified from the uploaded project after inspecting its actual Laravel views, models, controllers and schema.
+
+Included changes:
+1. Frontend category sidebar supports hover expansion on desktop and tap expansion on mobile.
+2. Subcategories can now contain subcategories recursively (unlimited depth in the data model).
+3. Existing brands remain available under any subcategory.
+4. Added a migration for parent_subcategory_id; existing subcategories remain top-level automatically.
+5. Admin Catalog now allows choosing a parent subcategory when creating a subcategory.
+6. Product List/Admin layout and storefront layout were tightened for small screens.
+7. Existing wide tables/content are allowed to scroll horizontally on mobile where needed.
+8. Sidebar/header colors were unified toward cyan/blue/indigo accents while preserving the existing design.
+9. Mobile category drawer has backdrop, close button, Escape handling and nested expand/collapse.
+
+IMPORTANT:
+After replacing/deploying this project, run:
+
+php artisan migrate
+php artisan optimize:clear
+
+The migration is required for nested subcategories. Do not skip it if you want unlimited nested subcategory levels.
+
+Then run the project normally:
+php artisan serve
+
+For development assets if needed:
+npm install
+npm run dev

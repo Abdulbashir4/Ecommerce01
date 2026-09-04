@@ -1,0 +1,10 @@
+OPTIMUM BIOMEDICAL - AMAZON DEMO IMPORTER (DROP-IN READY)
+
+1. Extract the contents of this ZIP directly into your existing Laravel project folder:
+   E:\Laravel Project\optimumbiomedical
+2. Choose Replace/Overwrite when Windows asks.
+3. Keep your existing .env file; this ZIP intentionally does not include .env.
+4. No is_demo column is required.
+5. No migration command is required for the importer to work. If the optional source fields already exist, the importer uses them automatically.
+6. Start the project normally with: php artisan serve
+7. Open: /admin/product-importer
